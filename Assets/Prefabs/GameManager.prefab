@@ -1,0 +1,82 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3699537017940159026
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3699537017940159028}
+  - component: {fileID: 3699537017940159027}
+  - component: {fileID: 3699537017940159031}
+  m_Layer: 0
+  m_Name: GameManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3699537017940159028
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3699537017940159026}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 70, y: 70, z: 0}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3699537017940159027
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3699537017940159026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e0e522b0d0103f4f926d239cfe2e278, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  coin: {fileID: 4878512149704167626, guid: 342178de39513fe4bbdea52856c5aa84, type: 3}
+  coinRespawnTime: 5
+  treesPrefabs:
+  - {fileID: 796062723129233222, guid: fd3fd963d2c701e449d8e8e0dcf705b2, type: 3}
+  - {fileID: 3265114616543008214, guid: dd57ed261cf25f54f9c49938ca5e902e, type: 3}
+  - {fileID: 2737856458570022152, guid: be5bffd844fc07f4fbd860f3f245414a, type: 3}
+  - {fileID: 3624854815327478084, guid: c727e118bba4e5d4f9029054c29d3fca, type: 3}
+  obstaclesPrefabs:
+  - {fileID: 8913708784472604959, guid: 8d2ff230f3ad5f74cbeb2edbaa570c2c, type: 3}
+  activeCoins: []
+  idleCoins: []
+  obstacles: []
+--- !u!114 &3699537017940159031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3699537017940159026}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20b1b0d7c1fcc974680bdbd34f42cbfa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerGO: {fileID: 0}
+  unitSpawnLocation: {fileID: 0}
+  units: []
+  unitPrefabs:
+  - {fileID: 6230548951511586435, guid: 9ad8636a627868d44be54a1dffba039b, type: 3}
+  - {fileID: 5132832744767214186, guid: 11466c7820f3e4743904a3dc21125087, type: 3}
+  - {fileID: 6211591366289989040, guid: ee9c22a4192976f488f695b1f97fa8fb, type: 3}
+  - {fileID: 136142597096093037, guid: c2dc108de8427cf4eba2fe07399dafda, type: 3}
+  - {fileID: 3160156425091403326, guid: 932fb8e2e6a00044c8c13d4c69481927, type: 3}
+  - {fileID: 3560813411383963925, guid: 9f58991431da86343b1af6412f77be28, type: 3}
+  - {fileID: 2745224646699075138, guid: ed56bdcde74b2864e999634616993442, type: 3}
+  - {fileID: 8725700302739946091, guid: 9a545e9877ddb8541934bfa41044e461, type: 3}
