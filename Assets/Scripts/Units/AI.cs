@@ -59,6 +59,8 @@ public class AI : MonoBehaviour
 
     private void Update()
     {
+        if (dead) return;
+        
         LookForCoins();
         MoveToCoin();
         MoveUnits();
@@ -73,6 +75,7 @@ public class AI : MonoBehaviour
         
         if (health <= 0 && !dead)
         {
+            dead = true;
             FindObjectOfType<VictoryOrLoseManager>().WinStatus(false);
         }
     }

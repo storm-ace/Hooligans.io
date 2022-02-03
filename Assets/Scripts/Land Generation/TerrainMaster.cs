@@ -256,11 +256,12 @@ public class TerrainMaster : MonoBehaviour
 
     public void BuyUnits()
     {
-        if (SaveSystem.instance.gameData.coins < 100 && playerLand[0] == null && playerLand[0].unitAvailable) return;
-        
-        playerLand[0].unitAvailable = true;
-        SaveSystem.instance.gameData.coins -= 100;
-        SaveSystem.instance.SaveData();
+        if (SaveSystem.instance.gameData.coins >= 100 && playerLand[0] && !playerLand[0].unitAvailable)
+        {
+            playerLand[0].unitAvailable = true;
+            SaveSystem.instance.gameData.coins -= 100;
+            SaveSystem.instance.SaveData();
+        }
     }
 
     private void UpdateWarStrenght()

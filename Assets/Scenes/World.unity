@@ -3871,7 +3871,7 @@ GameObject:
   m_Component:
   - component: {fileID: 950645066}
   m_Layer: 0
-  m_Name: Units
+  m_Name: Player Units
   m_TagString: Units
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5188,7 +5188,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 10000x
+  m_Text: 0x
 --- !u!222 &1314812951
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -8237,6 +8237,10 @@ PrefabInstance:
     - target: {fileID: 1833363843, guid: e8f005e537bce444caaf0a07fcc2d8d9, type: 3}
       propertyPath: m_Name
       value: HealthText
+      objectReference: {fileID: 0}
+    - target: {fileID: 7596587212233083240, guid: e8f005e537bce444caaf0a07fcc2d8d9, type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7596587212862531105, guid: e8f005e537bce444caaf0a07fcc2d8d9, type: 3}
       propertyPath: orthographic size
