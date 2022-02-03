@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Units;
 using UnityEngine;
 using UnityEngine.Serialization;
 
@@ -12,6 +13,7 @@ public class Coins : MonoBehaviour
         if (collision.GetComponent<Player>())
         {
             collision.GetComponent<Player>().Coins++;
+            collision.GetComponent<Player>().TotalCoins++;
             collision.GetComponent<Player>().UpdateCoins();
             mapSpawner.activeCoins.Remove(gameObject);
             mapSpawner.idleCoins.Add(gameObject);
@@ -29,6 +31,7 @@ public class Coins : MonoBehaviour
             else
             {
                 collision.GetComponent<SoldierUnit>().player.Coins++;
+                collision.GetComponent<SoldierUnit>().player.TotalCoins++;
                 collision.GetComponent<SoldierUnit>().player.UpdateCoins();
                 mapSpawner.activeCoins.Remove(gameObject);
                 mapSpawner.idleCoins.Add(gameObject);

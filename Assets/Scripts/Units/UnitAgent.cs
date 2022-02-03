@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class UnitAgent : MonoBehaviour
@@ -11,18 +9,29 @@ public class UnitAgent : MonoBehaviour
     public float unitPower = 4;
     public float unitCombatRange = 4;
     public LandChunk landToAttack, landOrigin;
+    public SpriteRenderer flag;
+    
+    private bool flee;
 
     public void Initialize(LandChunk landToAttack, LandChunk landOrigin)
     {
         this.landToAttack = landToAttack;
         this.landOrigin = landOrigin;
+        // flag.sprite = GameStateGO.GameState.flag;
     }
 
     private void FixedUpdate()
     {
         float step = movementSpeed * Time.deltaTime;
-        transform.position = Vector3.MoveTowards(new Vector3(transform.position.x, transform.position.y, -.5f),
-            landToAttack.transform.position, step);
+        transform.position = Vector2.MoveTowards(transform.position, landToAttack.transform.position, step);
+        
+        var distance = Vector2.Distance(transform.position, landToAttack.transform.position);
+
+        if (flee && distance < .4)
+        {
+            landOrigin.unitAvailable = true;
+            Destroy(gameObject); 
+        }
     }
     
     private void OnTriggerEnter2D(Collider2D col)
@@ -35,7 +44,6 @@ public class UnitAgent : MonoBehaviour
             if (land == landToAttack)
             {
                 land.IncomingUnits(this);
-                //Destroy(gameObject);
             }
         }
     }
@@ -43,6 +51,7 @@ public class UnitAgent : MonoBehaviour
     public void Retreat()
     {
         landToAttack = landOrigin;
+        flee = true;
     }
 }
 

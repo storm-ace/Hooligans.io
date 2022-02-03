@@ -3,7 +3,13 @@ guid: a337679f49c40e04cb2e8f1d27bd318b
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - terrainMaster: {instanceID: 0}
+  - oppositeSpawnPoint: {instanceID: 0}
+  - unitCountText: {instanceID: 0}
+  - landEnemieAI: {instanceID: 0}
+  - flagIcon: {instanceID: 0}
+  - flagIconPrefab: {fileID: 6157540125909469449, guid: 2a6b733ea03f00f42bedb9483a454109, type: 3}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

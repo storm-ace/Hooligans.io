@@ -55,5 +55,17 @@ PrefabInstance:
       propertyPath: m_Name
       value: BulletPistol
       objectReference: {fileID: 0}
+    - target: {fileID: 8675569501177418373, guid: fad8f0f7c6cfe364db739869816e0aaf, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.b
+      value: 0.37680292
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675569501177418373, guid: fad8f0f7c6cfe364db739869816e0aaf, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8675569501177418373, guid: fad8f0f7c6cfe364db739869816e0aaf, type: 3}
+      propertyPath: m_Parameters.colorGradient.key0.r
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fad8f0f7c6cfe364db739869816e0aaf, type: 3}

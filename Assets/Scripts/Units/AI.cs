@@ -1,14 +1,17 @@
-using System.Collections;
+using System;
 using System.Collections.Generic;
-using Saving;
+using Saves;
+using UI;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 public class AI : MonoBehaviour
 {
     [SerializeField] Transform mesh;
     [SerializeField] GameObject unitSpawnLocation, SelectCircle;
+
+    public int unitStrength;
 
     public TextMesh healthText;
 
@@ -32,6 +35,12 @@ public class AI : MonoBehaviour
         get { return health; }
         set { health = value; }
     }
+
+    private bool dead;
+    public bool Dead
+    {
+        get { return dead; }
+    }
     
     public string action;
     
@@ -41,6 +50,11 @@ public class AI : MonoBehaviour
     {
         _mapSpawner = FindObjectOfType<MapSpawner>();
         unitManager = FindObjectOfType<UnitManager>();
+    }
+
+    private void Start()
+    {
+        unitStrength = SaveSystem.instance.gameData.enemyUnitStrenght;
     }
 
     private void Update()
@@ -54,15 +68,13 @@ public class AI : MonoBehaviour
 
     private void UpdateHealth()
     {
-        if (health <= 0)
-        {
-            //TODO make victory window
-
-            GameStateGO.GameState.fightWon = true;
-            SceneManager.LoadSceneAsync("Menu");
-        }
+        healthText.text = string.Format($"{health}%", "0");
+        health = Mathf.Clamp(health, 0, 100);
         
-        healthText.text = $"{health}%";
+        if (health <= 0 && !dead)
+        {
+            FindObjectOfType<VictoryOrLoseManager>().WinStatus(false);
+        }
     }
 
     private void MoveUnits()

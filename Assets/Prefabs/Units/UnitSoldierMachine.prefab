@@ -7,6 +7,30 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: dmg
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: fps
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: rpm
+      value: 0.4
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: range
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: health
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: bulletPrefab
+      value: 
+      objectReference: {fileID: 3411684778275451756, guid: 135857cfb74b3a047bd88b535b57c61a, type: 3}
     - target: {fileID: 2766595320108991417, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
       propertyPath: m_Name
       value: UnitSoldierMachine

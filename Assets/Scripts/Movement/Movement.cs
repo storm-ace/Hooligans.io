@@ -1,45 +1,46 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Movement : MonoBehaviour
+namespace Movement
 {
-    public float speed;
-    public bool overrideModifiers;
-
-    [SerializeField] Transform playerSprite;
-
-    private Camera camera;
-
-    private void Awake()
+    public class Movement : MonoBehaviour
     {
-        camera = Camera.main;
-    }
+        public float speed;
+        public bool overrideModifiers;
 
-    private void Update()
-    {
-        var dir = Input.mousePosition - camera.WorldToScreenPoint(playerSprite.position);
-        var speedDetection = Vector3.Distance(dir, transform.position);
-        var tempSpeed = speed;
+        [SerializeField] Transform playerSprite;
 
-        SpeedByMousePosition(speedDetection, tempSpeed, overrideModifiers);
+        private Camera _camera;
 
-        var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
-        playerSprite.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
+        private void Awake()
+        {
+            _camera = Camera.main;
+        }
 
-        Vector3 target = camera.ScreenToWorldPoint(Input.mousePosition);
-        target.z = transform.position.z;
+        private void Update()
+        {
+            var dir = Input.mousePosition - _camera.WorldToScreenPoint(playerSprite.position);
+            var speedDetection = Vector3.Distance(dir, transform.position);
+            var tempSpeed = speed;
 
-        transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
-    }
+            SpeedByMousePosition(speedDetection, tempSpeed, overrideModifiers);
 
-    private void SpeedByMousePosition(float speedDetection, float tempSpeed, bool overrideModifiers = false)
-    {
-        if (overrideModifiers) return;
+            var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
+            playerSprite.rotation = Quaternion.AngleAxis(angle, Vector3.forward);
 
-        if (speedDetection <= 200) speed = Mathf.Lerp(tempSpeed, 3, Time.deltaTime * 10);
-        if (speedDetection <= 50) speed = Mathf.Lerp(tempSpeed, 0, Time.deltaTime * 10);
-        if (speedDetection >= 200) speed = Mathf.Lerp(tempSpeed, 5, Time.deltaTime * 10);
-        if (speed <= .1f) speed = 0;
+            Vector3 target = _camera.ScreenToWorldPoint(Input.mousePosition);
+            target.z = transform.position.z;
+
+            transform.position = Vector3.MoveTowards(transform.position, target, speed * Time.deltaTime);
+        }
+
+        private void SpeedByMousePosition(float speedDetection, float tempSpeed, bool overrideModifiers = false)
+        {
+            if (overrideModifiers) return;
+
+            if (speedDetection <= 200) speed = Mathf.Lerp(tempSpeed, 3, Time.deltaTime * 10);
+            if (speedDetection <= 50) speed = Mathf.Lerp(tempSpeed, 0, Time.deltaTime * 10);
+            if (speedDetection >= 200) speed = Mathf.Lerp(tempSpeed, 5, Time.deltaTime * 10);
+            if (speed <= .1f) speed = 0;
+        }
     }
 }

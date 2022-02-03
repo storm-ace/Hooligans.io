@@ -2,10 +2,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Saving;
+using Flag;
+using Saves;
 using UI;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class TerrainMaster : MonoBehaviour
@@ -15,12 +15,12 @@ public class TerrainMaster : MonoBehaviour
 
     public GameObject unitCountPrefab;
 
-   [HideInInspector] public List<LandChunk> spawnableLand = new List<LandChunk>();
-   [HideInInspector] public List<LandChunk> hostileLand = new List<LandChunk>();
-   [HideInInspector] public List<LandChunk> playerLand = new List<LandChunk>();
-   [HideInInspector] public List<LandChunk> landTiles = new List<LandChunk>();
+   public List<LandChunk> spawnableLand = new List<LandChunk>();
+   public List<LandChunk> hostileLand = new List<LandChunk>();
+   public List<LandChunk> playerLand = new List<LandChunk>();
+   public List<LandChunk> landTiles = new List<LandChunk>();
 
-    public Difficulty difficulty;
+   public Difficulty difficulty;
 
     public int levelChoosen = 0;
 
@@ -29,11 +29,62 @@ public class TerrainMaster : MonoBehaviour
 
     private bool stopHint;
 
+    public GameObject saveManagerPrefab;
+
     public static TerrainMaster Instance;
 
     private void Awake()
     {
-        Instance = this;
+        if (Instance == null)
+            Instance = this;
+        else
+        {
+            Destroy(gameObject);
+        }
+
+        if (SaveSystem.instance == null)
+        {
+            Instantiate(saveManagerPrefab);
+        }
+    }
+
+    private void Start()
+    {
+        if (SaveSystem.instance.gameData.continueGame && !SaveSystem.instance.gameData.returnToMenu)
+        {
+            UpdateCombatStatus(true);
+        }
+        else if (SaveSystem.instance.gameData.continueGame && SaveSystem.instance.gameData.returnToMenu)
+        {
+            UpdateCombatStatus(false);
+        }
+    }
+
+    private void UpdateCombatStatus(bool playGame)
+    {
+        print(SaveSystem.instance.gameData.fightWon);
+        if (SaveSystem.instance.gameData.fightWon)
+        {
+            var id = SaveSystem.instance.gameData.attackingLand;
+            var searchID = SaveSystem.instance.gameData.worldData.FindIndex(c => c.landID.Contains(id));
+            var newLandData = new GameData.MapData()
+            {
+                landID = id,
+                unitClaimed = GameData.MapData.UnitClaimed.Player,
+                unitPower = 1,
+                inCombat = false,
+                unitAvailable = true
+            };
+
+            SaveSystem.instance.gameData.worldData[searchID] = newLandData;
+            SaveSystem.instance.gameData.fightWon = false;
+        }
+
+        if (playGame) UiManager.Instance.PlayGame();
+        else
+        {
+            SaveSystem.instance.gameData.returnToMenu = false;
+        }
     }
 
     private void FixedUpdate()
@@ -61,7 +112,7 @@ public class TerrainMaster : MonoBehaviour
             levelCounter++;
         }
 
-        if (GameStateGO.GameState.newGame)
+        if (SaveSystem.instance.gameData.continueGame)
         {
             CreateLandTiles();
             PopulatedLandFromFile(levelsFound);
@@ -79,14 +130,12 @@ public class TerrainMaster : MonoBehaviour
 
         foreach (var chunk in levels[levelCounter])
         {
-#if UNITY_EDITOR
             chunk.name = $"Level:{levelCounter}_LandID:{keyCount}";
-#endif
             chunk.terrainMaster = this;
             chunk.landEnemieAI = landEnemieAI;
-            var text = Instantiate(unitCountPrefab, chunk.transform); //Add text to land
-            chunk.unitCountText = text.GetComponent<TextMesh>();
-            chunk.unitCountText.color = Color.yellow;
+            //var text = Instantiate(unitCountPrefab, chunk.transform); //Add text to land
+            //chunk.unitCountText = text.GetComponent<TextMesh>();
+            //chunk.unitCountText.color = Color.yellow;
             
             if (chunk.oppositeSpawnPoint && addSpawnInfoToList)
             {
@@ -104,24 +153,26 @@ public class TerrainMaster : MonoBehaviour
         print("Load saving game");
         foreach (var chunk in landTiles)
         {
-            var mapData = GameStateGO.GameState.worldData.Where(t => t.landID.Contains(chunk.gameObject.name));
-            chunk.inCombat = mapData.First().inCombat;
+            var mapData = SaveSystem.instance.gameData.worldData.Where(t => t.landID.Contains(chunk.gameObject.name));
             chunk.unitClaimed = mapData.First().unitClaimed;
             chunk.unitPower = mapData.First().unitPower;
+            chunk.inCombat = mapData.First().inCombat;
+            chunk.unitAvailable = mapData.First().unitAvailable;
 
-            if (chunk.unitClaimed == MapData.UnitClaimed.Unclaimed)
+            if (chunk.unitClaimed == GameData.MapData.UnitClaimed.Unclaimed)
             {
                 chunk.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
             } 
-            else if (chunk.unitClaimed == MapData.UnitClaimed.Player)
+            else if (chunk.unitClaimed == GameData.MapData.UnitClaimed.Player)
             {
                 chunk.GetComponent<SpriteRenderer>().color = Color.blue;
-                chunk.GetComponentInChildren<TextMesh>().text = $"Power: {chunk.unitPower}";
+                playerLand.Add(chunk);
+                //chunk.GetComponentInChildren<TextMesh>().text = $"Power: {chunk.unitPower}";
             }
             else
             {
                 chunk.GetComponent<SpriteRenderer>().color = Color.red;
-                chunk.GetComponentInChildren<TextMesh>().text = $"Power: {chunk.unitPower}";
+                //chunk.GetComponentInChildren<TextMesh>().text = $"Power: {chunk.unitPower}";
             }
         }
     }
@@ -130,17 +181,18 @@ public class TerrainMaster : MonoBehaviour
     {
         var randomPlayerSpawnPoint = Random.Range(0, spawnableLand.Count);
         spawnableLand[randomPlayerSpawnPoint].GetComponent<SpriteRenderer>().color = Color.blue;
-        spawnableLand[randomPlayerSpawnPoint].unitClaimed = MapData.UnitClaimed.Player;
+        spawnableLand[randomPlayerSpawnPoint].unitClaimed = GameData.MapData.UnitClaimed.Player;
         playersIsland = spawnableLand[randomPlayerSpawnPoint].transform;
         playerLand.Add(spawnableLand[randomPlayerSpawnPoint]);
         spawnableLand[randomPlayerSpawnPoint].unitPower = 1;
-        spawnableLand[randomPlayerSpawnPoint].GetComponentInChildren<TextMesh>().text =
-            $"Power: {spawnableLand[randomPlayerSpawnPoint].unitPower}";
+        spawnableLand[randomPlayerSpawnPoint].unitAvailable = true;
+        /*spawnableLand[randomPlayerSpawnPoint].GetComponentInChildren<TextMesh>().text =
+            $"Power: {spawnableLand[randomPlayerSpawnPoint].unitPower}";*/
 
         //Makes terrain we don't use gray
         foreach (LandChunk chunk in levels[levelChoosen])
         {
-            if (chunk.unitClaimed == MapData.UnitClaimed.Unclaimed)
+            if (chunk.unitClaimed == GameData.MapData.UnitClaimed.Unclaimed)
             {
                 chunk.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0, .5f);
             }
@@ -149,7 +201,6 @@ public class TerrainMaster : MonoBehaviour
 
     public IEnumerator HelpPlayerTimer()
     {
-        UiManager.Instance.gameWindow.SetActive(true);
         float delay = 6f;
         yield return new WaitForSeconds(delay);
         //Prevents the hint from printing if true
@@ -161,43 +212,55 @@ public class TerrainMaster : MonoBehaviour
     {
         print($"difficulty: {difficulty}");
         this.difficulty = difficulty;
-        int landClaimCounter = 0, maxLandClaim = Random.Range(1, (int)difficulty * 2);
+        int landClaimCounter = 0, maxLandClaim = Random.Range(3, 10 * (int)difficulty);
 
-        foreach (var land in spawnableLand)
+        while (landClaimCounter < maxLandClaim)
         {
-            if (landClaimCounter >= maxLandClaim) break; 
-            
-            if (land.unitClaimed == MapData.UnitClaimed.Unclaimed)
+            foreach (var land in landTiles)
             {
-                switch (difficulty)
-                {
-                    case Difficulty.easy:
-                        land.unitPower = Random.Range(1,3);
-                        break;
-                    case Difficulty.medium:
-                        land.unitPower = Random.Range(3,5);
-                        break;
-                    case Difficulty.hard:
-                        land.unitPower = Random.Range(5,10);
-                        break;
-                    case Difficulty.insane:
-                        land.unitPower = Random.Range(10,20);
-                        break;
-                }
+                if (landClaimCounter > maxLandClaim) break;
                 
-                land.GetComponent<SpriteRenderer>().color = Color.red;
-                land.unitClaimed = MapData.UnitClaimed.Hostile;
-                land.GetComponentInChildren<TextMesh>().text = $"Power: {land.unitPower}";
-                hostileLand.Add(land);
-                landEnemieAI.UpdateStats(land.unitPower);
-                landClaimCounter++;
+                if (land.unitClaimed == GameData.MapData.UnitClaimed.Unclaimed)
+                {
+                    switch (difficulty)
+                    {
+                        case Difficulty.easy:
+                            land.unitPower = Random.Range(1, 3);
+                            break;
+                        case Difficulty.medium:
+                            land.unitPower = Random.Range(3, 5);
+                            break;
+                        case Difficulty.hard:
+                            land.unitPower = Random.Range(5, 10);
+                            break;
+                        case Difficulty.insane:
+                            land.unitPower = Random.Range(10, 20);
+                            break;
+                    }
+
+                    land.GetComponent<SpriteRenderer>().color = Color.red;
+                    land.unitClaimed = GameData.MapData.UnitClaimed.Hostile;
+                    //land.GetComponentInChildren<TextMesh>().text = $"Power: {land.unitPower}";
+                    hostileLand.Add(land);
+                    landEnemieAI.UpdateStats(land.unitPower);
+                    landClaimCounter++;
+                }
             }
         }
-        
+
         gameRunning = true;
 
-        GameStateGO.GameState.newGame = true;
-        GameStateGO.GameState.SaveWorldData(landTiles, "", "");
+        SaveSystem.instance.gameData.continueGame = true;
+        SaveSystem.instance.SaveData();
+    }
+
+    public void BuyUnits()
+    {
+        if (SaveSystem.instance.gameData.coins < 100 && playerLand[0] == null && playerLand[0].unitAvailable) return;
+        
+        playerLand[0].unitAvailable = true;
+        SaveSystem.instance.gameData.coins -= 100;
+        SaveSystem.instance.SaveData();
     }
 
     private void UpdateWarStrenght()

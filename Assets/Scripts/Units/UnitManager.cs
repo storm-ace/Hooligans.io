@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Units;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
@@ -16,7 +17,7 @@ public class UnitManager : MonoBehaviour
     public int enemyStrenght;
 
     Camera cam;
-    Player player;
+    public Player player;
     Transform unitsTransform;
 
     private KeyCode[] keyCodes =
@@ -53,13 +54,11 @@ public class UnitManager : MonoBehaviour
 
     public void SpawnUnit(string unitRequest = "")
     {
-        string buttonInfo = unitRequest != String.Empty ? unitRequest : EventSystem.current.currentSelectedGameObject.name;
-
         int unitCost;
         int unitIndex;
         int unitStrenght;
 
-        switch (buttonInfo)
+        switch (unitRequest)
         {
             case "Button Man":
                 unitCost = 3;
@@ -184,15 +183,19 @@ public class UnitManager : MonoBehaviour
         if (coins > unitCost)
         {
             coins -= unitCost;
-            var unit = Instantiate(unitPrefabs[unitIndex]);
+            var unit = Instantiate(unitPrefabs[unitIndex], ai.transform);
+            var soldier = unit.GetComponent<SoldierUnit>();
             unit.tag = "EnemyUnit";
             for (int i = 0; i < unit.transform.childCount; i++)
             {
                 unit.transform.GetChild(i).tag = unit.tag;
             }
-            unit.GetComponent<SoldierUnit>().ai = ai;
-            unit.GetComponent<SoldierUnit>().IsAI = true;
-            unit.GetComponent<SoldierUnit>().unitManager = this;
+            
+            soldier.ai = ai;
+            soldier.IsAI = true;
+            soldier.unitManager = this;
+            soldier.Dmg *= soldier.ai.unitStrength;
+            
             unit.tag = "EnemyUnit";
             enemyUnits.Add(unit);
             enemyStrenght += unitStrenght;
@@ -219,19 +222,19 @@ public class UnitManager : MonoBehaviour
         switch (playerUnits.Count)
         {
             case 10:
-                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 8, Time.deltaTime);
+                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 15, Time.deltaTime);
                 break;
             case 24:
-                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 10, Time.deltaTime);
+                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 20, Time.deltaTime);
                 break;
             case 30:
-                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 14, Time.deltaTime);
+                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 25, Time.deltaTime);
                 break;
             case 50:
-                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 19, Time.deltaTime);
+                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 30, Time.deltaTime);
                 break;
             case 60:
-                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 20, Time.deltaTime);
+                cam.orthographicSize = Mathf.Lerp(cam.orthographicSize, 35, Time.deltaTime);
                 break;
         }
 

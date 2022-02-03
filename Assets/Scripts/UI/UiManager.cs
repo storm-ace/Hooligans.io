@@ -1,9 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
-using Saving;
-using UnityEditor;
+using System;
+using Saves;
 using UnityEngine;
-using UnityEngine.Serialization;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace UI
@@ -19,6 +17,7 @@ namespace UI
         public GameObject menu;
         public GameObject drawings;
         public CombatWindow CombatWindow;
+        public Text coins;
         
         private Camera cam;
 
@@ -43,12 +42,22 @@ namespace UI
 
         private void Awake()
         {
-            Instance = this;
+            if (Instance == null) Instance = this;
 
             Application.targetFrameRate = 30;
             ColorUtility.TryParseHtmlString("#39971F", out onColor);
             ColorUtility.TryParseHtmlString("#AE2021", out offColor);
             cam = Camera.main;
+        }
+
+        private void Update()
+        {
+            if (Input.GetMouseButtonDown(0) && Input.GetKey(KeyCode.F1))  Application.OpenURL(Application.persistentDataPath + "/SaveData.io");
+        }
+
+        private void OnApplicationQuit()
+        {
+            SaveSystem.instance.SaveData();
         }
 
         private void FixedUpdate()
@@ -60,6 +69,7 @@ namespace UI
                 helpPlayerPanel.SetActive(false);
             }
 
+            coins.text = $"{SaveSystem.instance.gameData.coins}";
         }
 
         public void CloseSettingsPanel()
@@ -87,7 +97,7 @@ namespace UI
 
         public void PlayGame()
         {
-            if (GameStateGO.GameState.newGame)
+            if (SaveSystem.instance.gameData.continueGame)
             {
                 CloseMenuUI(false);
                 StartGame();
@@ -169,12 +179,17 @@ namespace UI
 
         public void StartGame()
         {
-            difficultyWindow.SetActive(false);
+            Time.timeScale = 1;
             var terrainMaster = GetComponent<TerrainMaster>();
-            terrainMaster.PopulateLevelsList();
-            StartCoroutine(terrainMaster.HelpPlayerTimer());
+            
+            difficultyWindow.SetActive(false);
+            gameWindow.SetActive(true);
             menu.SetActive(false);
+            
+            terrainMaster.PopulateLevelsList();
             gameRunning = true;
+            
+            if (!SaveSystem.instance.gameData.continueGame) StartCoroutine(terrainMaster.HelpPlayerTimer());
         }
 
         public void GamemodeEasy()
@@ -192,7 +207,7 @@ namespace UI
             GetComponent<TerrainMaster>().SpawnHostilesOnTheMap(Difficulty.hard);
         }
 
-        public void OpenCombatWindow(UnitAgent attackingUnit)
+        public void OpenCombatWindow(UnitAgent attackingUnit, LandChunk landUnderAttack, int enemyPower)
         {
             combatWindow.SetActive(true);
             Time.timeScale = 0;
@@ -200,13 +215,25 @@ namespace UI
             if (attackingUnit.unitType == UnitType.Player)
             {
                 //Flee button active
-                CombatWindow.RenderFleeBtn(true, attackingUnit);
+                CombatWindow.RenderFleeBtn(true, attackingUnit, landUnderAttack, enemyPower);
             }
             else
             {
                 //Flee button not active
-                CombatWindow.RenderFleeBtn(false, attackingUnit);
+                CombatWindow.RenderFleeBtn(false, attackingUnit, landUnderAttack, enemyPower);
             }
+        }
+
+        public void ResetGameData()
+        {
+            SaveSystem.instance.ResetSave();
+            CloseSettingsPanel();
+        }
+
+        public void ReturnToMenu()
+        {
+            SaveSystem.instance.gameData.returnToMenu = true;
+            SceneManager.LoadSceneAsync("Menu");
         }
     }
 

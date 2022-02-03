@@ -1,13 +1,9 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using Saving;
+using Flag;
+using Saves;
 using UI;
-using UnityEditor;
 using UnityEngine;
-using UnityEngine.Serialization;
-using UnityEngine.UI;
-using Saving;
 
 public class LandChunk : MonoBehaviour
 {
@@ -15,15 +11,37 @@ public class LandChunk : MonoBehaviour
 
     [Header("A hostile unit will spawn on the oppositeSpawnPoint")] public GameObject oppositeSpawnPoint;
     [Header("Based on amount of collision points we scale the (real country size)")] public float unitMovementSpeed;
-    public MapData.UnitClaimed unitClaimed;
+    public GameData.MapData.UnitClaimed unitClaimed;
     public int unitPower;
     public TextMesh unitCountText;
     public bool inCombat;
     public LandEnemieAI landEnemieAI;
+    public bool unitAvailable;
+    public SpriteRenderer flagIcon;
+    public GameObject flagIconPrefab;
 
     private void Start()
     {
+        var flag = Instantiate(flagIconPrefab, gameObject.transform);
+        flagIcon = flag.GetComponent<SpriteRenderer>();
+        flagIcon.sortingOrder = 20;
+        //flagIcon.sprite = SaveSystem.instance.currentFlag;
+        
         CalculateCountrySize();
+    }
+
+    private void Update()
+    {
+        if (unitAvailable)
+        {
+            flagIcon.enabled = true;
+            unitAvailable = true;
+        }
+        else
+        {
+            flagIcon.enabled = false;
+            unitAvailable = false;
+        }
     }
 
     public void CalculateCountrySize()
@@ -44,42 +62,50 @@ public class LandChunk : MonoBehaviour
     public void IncomingUnits(UnitAgent unitAgent)
     {
         //Land belongs to nobody
-        if (this.unitClaimed == MapData.UnitClaimed.Unclaimed)
+        if (unitClaimed == GameData.MapData.UnitClaimed.Unclaimed)
         {
-            if (unitAgent.unitType == UnitType.Player)
+            switch (unitAgent.unitType)
             {
-                this.unitClaimed = MapData.UnitClaimed.Player;
-                GetComponent<SpriteRenderer>().color = Color.blue;
-                unitPower = 1;
-                unitCountText.text = $"Power: {unitPower}";
-                terrainMaster.playerLand.Add(this);
+                case UnitType.Player:
+                    unitClaimed = GameData.MapData.UnitClaimed.Player;
+                    GetComponent<SpriteRenderer>().color = Color.blue;
+                    unitPower = 1;
+                    //unitCountText.text = $"Power: {unitPower}";
+                    terrainMaster.playerLand.Add(this);
+                    unitAvailable = true;
+                    break;
+                case UnitType.Enemy:
+                    unitClaimed = GameData.MapData.UnitClaimed.Hostile;
+                    GetComponent<SpriteRenderer>().color = Color.red;
+                    unitPower = 1;
+                    //unitCountText.text = $"Power: {unitPower}";
+                    terrainMaster.hostileLand.Add(this);
+                    landEnemieAI.Strenght++;
+                    StartCoroutine(ResetCombatStatus());
+                    break;
             }
-            else if (unitAgent.unitType == UnitType.Enemy)
-            {
-                this.unitClaimed = MapData.UnitClaimed.Hostile;
-                GetComponent<SpriteRenderer>().color = Color.red;
-                unitPower = 1;
-                unitCountText.text = $"Power: {unitPower}";
-                terrainMaster.hostileLand.Add(this);
-                landEnemieAI.Strenght++;
-                StartCoroutine(ResetCombatStatus());
-            }
+            
+            Destroy(unitAgent.gameObject);
+
+            SaveSystem.instance.UpdateLandData();
+            SaveSystem.instance.SaveData();
         }
 
         //Land belongs to enemy
-        if (this.unitClaimed == MapData.UnitClaimed.Hostile)
+        if (unitClaimed == GameData.MapData.UnitClaimed.Hostile)
         {
-            if (unitAgent.unitType == UnitType.Player)
-            {
-                UiManager.Instance.OpenCombatWindow(unitAgent);
-            }
-            else
-            {
-                UiManager.Instance.OpenCombatWindow(unitAgent);
-            }
+            SaveSystem.instance.gameData.enemyUnitStrenght = unitPower;
+            UiManager.Instance.OpenCombatWindow(unitAgent, this, unitPower);
         }
         
-        GameStateGO.GameState.SaveWorldData(terrainMaster.landTiles);
+        //Land belongs to player
+        if (unitClaimed == GameData.MapData.UnitClaimed.Player)
+        {
+            unitAvailable = true;
+            Destroy(unitAgent.gameObject);
+        }
+        
+        SaveSystem.instance.SaveData();
     }
 
     private IEnumerator ResetCombatStatus()

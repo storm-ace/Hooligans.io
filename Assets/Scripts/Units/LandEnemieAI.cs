@@ -1,8 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
-using Saving;
+using Flag;
 using UnityEngine;
-using Saving;
 
 public class LandEnemieAI : MonoBehaviour
 {
@@ -123,7 +120,7 @@ public class LandEnemieAI : MonoBehaviour
             LandChunk landOrigin = terrainMaster.hostileLand[Random.Range(0, terrainMaster.hostileLand.Count)];
             foreach (LandChunk chunk in terrainMaster.landTiles)
             {
-                if (landOrigin.unitPower > chunk.unitPower && chunk.unitClaimed == MapData.UnitClaimed.Unclaimed && chunk.inCombat == false)
+                if (landOrigin.unitPower > chunk.unitPower && chunk.unitClaimed == GameData.MapData.UnitClaimed.Unclaimed && chunk.inCombat == false)
                 {
                     landToAttack = chunk;
                     state = "Attack empty land";

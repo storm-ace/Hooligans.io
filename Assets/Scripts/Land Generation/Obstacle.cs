@@ -6,18 +6,18 @@ public class Obstacle : MonoBehaviour
 {
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.GetComponent<Movement>() != null)
+        if (collision.GetComponent<Movement.Movement>() != null)
         {
-            collision.GetComponent<Movement>().overrideModifiers = true;
-            collision.GetComponent<Movement>().speed = 1;
+            collision.GetComponent<Movement.Movement>().overrideModifiers = true;
+            collision.GetComponent<Movement.Movement>().speed = 1;
         }
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        if (collision.GetComponent<Movement>() != null)
+        if (collision.GetComponent<Movement.Movement>() != null)
         {
-            collision.GetComponent<Movement>().overrideModifiers = false;
+            collision.GetComponent<Movement.Movement>().overrideModifiers = false;
         }
     }
 }

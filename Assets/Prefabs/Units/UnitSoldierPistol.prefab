@@ -7,6 +7,22 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: fps
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: rpm
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: range
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: health
+      value: 20
+      objectReference: {fileID: 0}
     - target: {fileID: 2766595320108991417, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
       propertyPath: m_Name
       value: UnitSoldierPistol

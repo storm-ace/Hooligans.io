@@ -8,9 +8,29 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
-      propertyPath: range
-      value: 12
+      propertyPath: dmg
+      value: 100
       objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: fps
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: rpm
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: range
+      value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: health
+      value: 200
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: bulletPrefab
+      value: 
+      objectReference: {fileID: 2127149639492172413, guid: c8c3a94adb0daa54eb9c05aa28392ae3, type: 3}
     - target: {fileID: 2766595320108991417, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
       propertyPath: m_Name
       value: UnitTankSuper

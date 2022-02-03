@@ -8,8 +8,24 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: dmg
+      value: 50
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: fps
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: rpm
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
       propertyPath: range
-      value: 10
+      value: 25
+      objectReference: {fileID: 0}
+    - target: {fileID: 22413071231066148, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
+      propertyPath: health
+      value: 150
       objectReference: {fileID: 0}
     - target: {fileID: 2766595320108991417, guid: 61246e36a2799ad41b0d26afbd335981, type: 3}
       propertyPath: m_Name
